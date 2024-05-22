@@ -1,0 +1,383 @@
+{
+	"info": {
+		"_postman_id": "8bdc863e-27be-4100-b088-3b4bc9d4fd6d",
+		"name": "Kyla_Task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15043613"
+	},
+	"item": [
+		{
+			"name": "GET Available Times",
+			"item": [
+				{
+					"name": "Valid Date and Clinic",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"pm.environment.set('currentDate', moment().format((\"YYYY-MM-DD\")));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the status code is 200\r",
+									"pm.test(\"Status code is 200\", ()=>{\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Check if the response is JSON\r",
+									"pm.test(\"Response is JSON\", ()=>{\r",
+									"    pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"// Get response body\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Check if the response contains expected fields\r",
+									"pm.test(\"Response contains required fields\", ()=>{\r",
+									"    pm.expect(jsonData).to.have.property(\"success\");\r",
+									"    pm.expect(jsonData).to.have.property(\"data\");\r",
+									"    pm.expect(jsonData.data).to.have.property(\"currentDate\");\r",
+									"    pm.expect(jsonData.data).to.have.property(\"nextDate\");\r",
+									"    pm.expect(jsonData.data).to.have.property(\"currentDateHasFreeSlots\");\r",
+									"    pm.expect(jsonData.data).to.have.property(\"nextDateHasFreeSlots\");\r",
+									"});\r",
+									"\r",
+									"// Check if the status is true\r",
+									"pm.test(\"Status is true\", function () {\r",
+									"    pm.expect(jsonData.success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"// Check the slots to have data if true\r",
+									"\r",
+									"pm.test(\"Current Date has free slots\", function () {\r",
+									"    if(jsonData.data.currentDateHasFreeSlots){\r",
+									"        pm.expect(jsonData.data.currentDate).to.be.a('array');\r",
+									"        pm.expect(jsonData.data.currentDate).to.be.a('array').that.is.not.empty;\r",
+									"    };\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Next Date has free slots\", function () {\r",
+									"    if(jsonData.data.nextDateHasFreeSlots){\r",
+									"        pm.expect(jsonData.data.nextDate).to.be.a('array');\r",
+									"        pm.expect(jsonData.data.nextDate).to.be.a('array').that.is.not.empty;\r",
+									"    };\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}drchrono/public/api/v1/schedule?clinicId={{clinicId}}&date={{currentDate}}&examRoom={{examRoom}}",
+							"host": [
+								"{{baseUrl}}drchrono"
+							],
+							"path": [
+								"public",
+								"api",
+								"v1",
+								"schedule"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "{{clinicId}}"
+								},
+								{
+									"key": "date",
+									"value": "{{currentDate}}"
+								},
+								{
+									"key": "examRoom",
+									"value": "{{examRoom}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Clinic ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"pm.environment.set('currentDate', moment().format((\"YYYY-MM-DD\")));\r",
+									"\r",
+									"pm.environment.set('invalidClinicId', pm.environment.get('clinicId')+1);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the status code is 200\r",
+									"pm.test(\"Status code is 404\", ()=>{\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"// Check if the response is JSON\r",
+									"pm.test(\"Response is JSON\", ()=>{\r",
+									"    pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"// Get response body\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Check if the response contains expected fields\r",
+									"pm.test(\"Response contains required fields\", ()=>{\r",
+									"    pm.expect(jsonData).to.have.property(\"success\");\r",
+									"    pm.expect(jsonData).to.have.property(\"data\");\r",
+									"    pm.expect(jsonData).to.have.property(\"error\");\r",
+									"});\r",
+									"\r",
+									"// Check if the status is false\r",
+									"pm.test(\"Status is false\", ()=>{\r",
+									"    pm.expect(jsonData.success).to.be.false;\r",
+									"});\r",
+									"\r",
+									"// Check if the data is null\r",
+									"pm.test(\"Status is false\", ()=>{\r",
+									"    pm.expect(jsonData.data).to.be.null;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}drchrono/public/api/v1/schedule?clinicId={{invalidClinicId}}&date={{currentDate}}&examRoom={{examRoom}}",
+							"host": [
+								"{{baseUrl}}drchrono"
+							],
+							"path": [
+								"public",
+								"api",
+								"v1",
+								"schedule"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "{{invalidClinicId}}"
+								},
+								{
+									"key": "date",
+									"value": "{{currentDate}}"
+								},
+								{
+									"key": "examRoom",
+									"value": "{{examRoom}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Date / Past Date (- 1 day)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"pm.environment.set('yesterday', moment().subtract(1, 'days').format((\"YYYY-MM-DD\")));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}drchrono/public/api/v1/schedule?clinicId={{clinicId}}&date={{yesterday}}&examRoom=1",
+							"host": [
+								"{{baseUrl}}drchrono"
+							],
+							"path": [
+								"public",
+								"api",
+								"v1",
+								"schedule"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "{{clinicId}}"
+								},
+								{
+									"key": "date",
+									"value": "{{yesterday}}"
+								},
+								{
+									"key": "examRoom",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid date / Future Date (+ 1 year)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"pm.environment.set('currentDate', moment().format((\"YYYY-MM-DD\")));\r",
+									"\r",
+									"const moment = require('moment');\r",
+									"pm.environment.set('nextYear', moment().add(1, 'years').format((\"YYYY-MM-DD\")));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}drchrono/public/api/v1/schedule?clinicId={{clinicId}}&date={{nextYear}}&examRoom=1",
+							"host": [
+								"{{baseUrl}}drchrono"
+							],
+							"path": [
+								"public",
+								"api",
+								"v1",
+								"schedule"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "{{clinicId}}"
+								},
+								{
+									"key": "date",
+									"value": "{{nextYear}}"
+								},
+								{
+									"key": "examRoom",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Date Parameter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Check if the status code is 400 if date is empty\r",
+									"pm.test(\"Status code is 400 if date is empty\", ()=> {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}drchrono/public/api/v1/schedule?clinicId={{clinicId}}&examRoom={{examRoom}}",
+							"host": [
+								"{{baseUrl}}drchrono"
+							],
+							"path": [
+								"public",
+								"api",
+								"v1",
+								"schedule"
+							],
+							"query": [
+								{
+									"key": "clinicId",
+									"value": "{{clinicId}}"
+								},
+								{
+									"key": "examRoom",
+									"value": "{{examRoom}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
