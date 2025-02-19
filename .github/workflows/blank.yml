@@ -13,7 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install Newman Globally
+        run: npm install -g newman@latest
+
+      - name: Debug:Check Installed Global Packages
+        run: npm list -g --depth=0
 
       - name: Run a one-line script
         run: echo Hello, world!
