@@ -42,10 +42,14 @@ jobs:
       - name: Debug:Check Where Newman & Reporters Are Installed
         run: which newman && which newman-reporter-htmlextra || true
 
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Run Postman Collection
+        run: newman run Kyla_Task.postman_collection.json -e Kyla_Task_env.postman_environment.json -r htmlextra,cli
 
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Debug:List Generated Report Files
+        run: ls -la newman || true
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report
+          path: newman/*.html
