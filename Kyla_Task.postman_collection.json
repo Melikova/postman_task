@@ -220,7 +220,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const moment = require('moment');\r",
+									"let moment = require('moment');\r",
 									"pm.environment.set('yesterday', moment().subtract(1, 'days').format((\"YYYY-MM-DD\")));"
 								],
 								"type": "text/javascript",
